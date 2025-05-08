@@ -41,7 +41,6 @@ st.markdown("""
 ## Purpose of this website
 The objectives of using loan prediction in this application are:
 - To assist in the automatic decision-making process of whether a loan will be approved or rejected, based on prospective borrowers' data.
-- To improve the accuracy and consistency of loan approval decisions, minimizing human subjectivity and bias.
 - To expedite the loan evaluation process, ensuring efficiency and scalability, especially in high-application volume environments.
 """)
 
