@@ -3,8 +3,8 @@ import joblib
 import pandas as pd
 
 # Load model and scaler
-model_path = knn_model.pkl'
-scaler_path = scaler.pkl'
+model_path = "knn_model.pkl"
+scaler_path = "scaler.pkl"
 
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
