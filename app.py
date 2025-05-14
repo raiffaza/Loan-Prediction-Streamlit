@@ -28,7 +28,7 @@ with col2:
 
 # Title and Subtitle
 st.title("JPMorgan Loan Prediction App")
-st.markdown("### Powered by Machine Learning | Fast • Secure • Intelligent")
+st.markdown("### Fast • Secure • Intelligent")
 
 # --- ABOUT JP MORGAN SECTION ---
 st.markdown("""
@@ -123,3 +123,4 @@ if submit_button:
     - **Employment Status**: Employed individuals are seen as lower risk.
 
     """)
+    st.markdown("Powered by Machine Learning | Naufal Dzakia Raiffaza")
