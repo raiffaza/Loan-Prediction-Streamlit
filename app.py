@@ -71,7 +71,7 @@ st.header("Enter Your Financial Information")
 
 # Input fields
 income = st.number_input("Monthly Income ($)", min_value=0, help="Enter your total monthly income")
-credit_score = st.number_input("Credit Score", min_value=300, max_value=850, help="Your FICO credit score")
+credit_score = st.number_input("Credit Score", min_value=0, max_value=850, help="Your FICO credit score")
 loan_amount = st.number_input("Loan Amount Requested ($)", min_value=0)
 dti_ratio = st.number_input("Debt-to-Income Ratio (%)", min_value=0.0, help="Total monthly debt payments divided by gross monthly income")
 employment_status = st.selectbox(
