@@ -2,67 +2,90 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# Load model and scaler
-model_path = "knn_model.pkl"
-scaler_path = "scaler.pkl"
+# Load pre-trained model and scaler
+MODEL_PATH = "knn_model.pkl"
+SCALER_PATH = "scaler.pkl"
 
-model = joblib.load(model_path)
-scaler = joblib.load(scaler_path)
+try:
+    model = joblib.load(MODEL_PATH)
+    scaler = joblib.load(SCALER_PATH)
+except Exception as e:
+    st.error("Error loading model or scaler. Please check the file paths.")
+    st.stop()
 
-# Set page config
-st.set_page_config(page_title="Loan Prediction App", page_icon="🏦")
+# Set page configuration
+st.set_page_config(
+    page_title="JPMorgan Loan Prediction",
+    page_icon="🏦",
+    layout="centered"
+)
 
-# Centered Logo
+# --- HEADER ---
+# Display JPMorgan Logo (centered)
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("JPMorgan.png", width=250)
 
-# Title and Description
-st.title("Umbrella Corps Loan Prediction App")
+# Title and Subtitle
+st.title("JPMorgan Loan Prediction App")
+st.markdown("### Powered by Machine Learning | Fast • Secure • Intelligent")
+
+# --- ABOUT JP MORGAN SECTION ---
 st.markdown("""
-### Umbrella Corps,a globally renowned leader in the medical and biotechnology industries, is now expanding its expertise into financial services with the launch of its innovative banking division.
-Leveraging cutting-edge technology and data-driven decision-making, Umbrella Corps introduces a smart loan evaluation system powered by machine learning .
-This application enables users to quickly assess their eligibility for a loan by simply entering key financial information.
-Receive an instant prediction on whether your loan application is likely to be approved or rejected , all while benefiting from a secure, transparent, and efficient process.
+---
+## About JPMorgan Chase
+
+> **JPMorgan Chase & Co.** is one of the most prestigious and influential banks in the world. As the largest bank in the United States by assets, it serves millions of customers globally through its diverse financial services — including investment banking, asset management, commercial banking, and consumer finance.
+
+With a strong commitment to **technology, innovation, and customer-centric solutions**, JPMorgan has been at the forefront of leveraging **machine learning and artificial intelligence** to improve decision-making, risk assessment, and customer experience across its operations.
+
+This web application reflects that same spirit of innovation — bringing **cutting-edge machine learning models** into the heart of loan approval processes to deliver faster, smarter, and fairer decisions for customers.
 """)
 
-# Business Problem Section
+# --- PURPOSE OF THE APP ---
 st.markdown("""
-## Business Problem
-Financial institutions need a reliable way to determine whether a loan application from a potential borrower should be approved or rejected. A well-designed loan approval process helps minimize the risk of non-performing loans and ensures that only financially viable applicants are approved.
+---
+## Purpose of This Tool
 
-Manual processes are time-consuming, subject to human bias, and can struggle to keep up with a high volume of applications. In addition, traditional methods may not be able to scale effectively as the number of applications increases.
+This interactive platform helps users **predict whether a loan will be approved or rejected**, based on key financial metrics such as:
 
-Using automation through machine learning can address these challenges and bring greater efficiency, fairness, and speed to the loan evaluation process.
+- Income  
+- Credit Score  
+- Loan Amount  
+- Debt-to-Income Ratio  
+- Employment Status  
+
+### 🎯 Objectives:
+- Automate the loan evaluation process  
+- Minimize human bias and errors  
+- Deliver instant, data-driven predictions  
+- Help applicants understand their eligibility before applying
+
+This aligns perfectly with **JPMorgan’s mission to build smarter, scalable, and secure financial systems powered by AI and machine learning**.
 """)
 
-# Purpose of
-st.markdown("""
-## Purpose of this website
-The objectives of using loan prediction in this application are:
-- To assist in the automatic decision-making process of whether a loan will be approved or rejected, based on prospective borrowers' data.
-- To expedite the loan evaluation process, ensuring efficiency and scalability, especially in high-application volume environments.
-""")
+# --- INPUT FORM ---
+st.markdown("---")
+st.header("Enter Your Financial Information")
 
-# Input Section
-st.header("Enter Your Data")
-income = st.number_input("Income", min_value=0)
-credit_score = st.number_input("Credit Score", min_value=0, max_value=850)
-loan_amount = st.number_input("Loan Amount", min_value=0)
-dti_ratio = st.number_input("DTI Ratio", min_value=0.0)
+# Input fields
+income = st.number_input("Monthly Income ($)", min_value=0, help="Enter your total monthly income")
+credit_score = st.number_input("Credit Score", min_value=300, max_value=850, help="Your FICO credit score")
+loan_amount = st.number_input("Loan Amount Requested ($)", min_value=0)
+dti_ratio = st.number_input("Debt-to-Income Ratio (%)", min_value=0.0, help="Total monthly debt payments divided by gross monthly income")
 employment_status = st.selectbox(
     "Employment Status",
-    [0, 1],
-    index=1,
-    format_func=lambda x: "Employed" if x == 1 else "Unemployed"
+    options=[0, 1],
+    format_func=lambda x: "Unemployed" if x == 0 else "Employed",
+    help="Are you currently employed?"
 )
 
-# Submit Button
-submit_button = st.button("Check Loan Eligibility")
+# Submit button
+submit_button = st.button("Check Loan Eligibility", use_container_width=True)
 
-# Prediction Result (appears only after button click)
+# --- PREDICTION LOGIC ---
 if submit_button:
-    # Create input data as DataFrame
+    # Create DataFrame from input
     input_data = pd.DataFrame({
         'Income': [income],
         'Credit_Score': [credit_score],
@@ -71,28 +94,33 @@ if submit_button:
         'Employment_Status': [employment_status]
     })
 
-    # Scale input data
-    input_data_scaled = scaler.transform(input_data)
+    # Scale input data using the loaded scaler
+    try:
+        input_data_scaled = scaler.transform(input_data)
+    except Exception as e:
+        st.error("Error scaling input data. Please ensure all inputs are valid.")
+        st.stop()
 
     # Make prediction
     prediction = model.predict(input_data_scaled)[0]
 
-    # Display result in an attractive manner
+    # --- DISPLAY RESULT ---
     st.markdown("## 📊 Prediction Result")
     if prediction == 1:
         st.success("✅ Congratulations! Your loan is likely to be **Approved**.", icon="💰")
     else:
         st.error("❌ Unfortunately, your loan may be **Rejected**.", icon="🚫")
 
-    # Additional Info
+    # --- ADDITIONAL INFO ---
     st.markdown("""
     ---
-    ### Explanation
-    - `Text` (string): User-provided reason for requesting a loan.
-    - `Income` (numeric): Applicant's income.
-    - `Credit_Score` (numeric): Applicant’s credit score.
-    - `Loan_Amount` (numeric): Amount of loan requested.
-    - `DTI_Ratio` (numeric): Debt-to-Income ratio.
-    - `Employment_Status` (categorical): Employment status (`employed` / `unemployed`).
-""")
+    ### 🔍 Explanation of Features
 
+    - **Income**: Higher income generally increases chances of approval.
+    - **Credit Score**: A score above 700 is typically considered good.
+    - **Loan Amount**: Larger loans carry higher risk.
+    - **DTI Ratio**: Lower ratios indicate better repayment ability.
+    - **Employment Status**: Employed individuals are seen as lower risk.
+
+    This tool uses a **KNN classifier trained on real-world loan data** to predict outcomes based on patterns and similarities in historical applications.
+    """)
