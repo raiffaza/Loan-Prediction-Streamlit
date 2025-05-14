@@ -29,7 +29,7 @@ with col2:
 # Title and Subtitle
 st.markdown("<h1 style='text-align: center; color: #003B8E;'>JPMorgan Loan Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>Fast • Secure • Intelligent</h3>", unsafe_allow_html=True)
-st.markdown("---")
+
 
 # --- ABOUT JP MORGAN SECTION ---
 st.markdown("""
