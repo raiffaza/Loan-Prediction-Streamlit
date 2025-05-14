@@ -27,7 +27,7 @@ with col2:
     st.image("JPMorgan.png", width=250)
 
 # Title and Subtitle
-st.title("JPMorgan Loan Prediction App")
+st.markdown("<h1 style='text-align: center;'>JPMorgan Loan Prediction App</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>Fast • Secure • Intelligent</h3>", unsafe_allow_html=True)
 
 # --- ABOUT JP MORGAN SECTION ---
