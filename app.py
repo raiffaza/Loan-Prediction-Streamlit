@@ -122,5 +122,4 @@ if submit_button:
     - **DTI Ratio**: Lower ratios indicate better repayment ability.
     - **Employment Status**: Employed individuals are seen as lower risk.
 
-    This tool uses a **KNN classifier trained on real-world loan data** to predict outcomes based on patterns and similarities in historical applications.
     """)
