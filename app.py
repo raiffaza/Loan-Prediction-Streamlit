@@ -15,7 +15,7 @@ st.set_page_config(page_title="Loan Prediction App", page_icon="🏦")
 # Centered Logo
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("umbrella.jpg", width=250)
+    st.image("HSBC.png", width=250)
 
 # Title and Description
 st.title("Umbrella Corps Loan Prediction App")
