@@ -14,4 +14,7 @@ Specifically, the machine learning objectives of this project are:
 
 The model used is `K-Nearest Neighbors (KNN)`, which has been optimized with GridSearchCV to determine the best parameters, and trained to recognize patterns from historical loan application data with the label `Approved` or `Rejected`.
 
+Notes: 
+- If u want to try run in your own computer to test runtime between Random Forest and KNN, you can check `predict KNN/RF.py`
+
 ----
