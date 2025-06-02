@@ -10,7 +10,7 @@ model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
 # Set page config
-st.set_page_config(page_title="JPMorgan Loan Prediction App", page_icon="🏦")
+st.set_page_config(page_title="Loan Prediction App", page_icon="🏦")
 
 # Centered Logo
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -95,4 +95,5 @@ if submit_button:
     - `Loan_Amount` (numeric): Amount of loan requested.
     - `DTI_Ratio` (numeric): Debt-to-Income ratio.
     - `Employment_Status` (categorical): Employment status (`employed` / `unemployed`).
-    """)
+""")
+
