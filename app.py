@@ -10,20 +10,20 @@ model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
 # Set page config
-st.set_page_config(page_title="Loan Prediction App", page_icon="🏦")
+st.set_page_config(page_title="JPMorgan Loan Prediction App", page_icon="🏦")
 
 # Centered Logo
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("umbrella.jpg", width=250)
+    st.image("JPMorgan.png", width=250)
 
 # Title and Description
-st.title("Umbrella Corps Loan Prediction App")
+st.title("JPMorgan Loan Prediction App")
 st.markdown("""
-### Umbrella Corps,a globally renowned leader in the medical and biotechnology industries, is now expanding its expertise into financial services with the launch of its innovative banking division.
-Leveraging cutting-edge technology and data-driven decision-making, Umbrella Corps introduces a smart loan evaluation system powered by machine learning .
+### JPMorgan, a globally recognized leader in banking and financial services, is leveraging its extensive expertise to bring you an innovative loan evaluation system.
+Utilizing cutting-edge technology and data-driven decision-making, JPMorgan introduces a smart loan evaluation system powered by machine learning.
 This application enables users to quickly assess their eligibility for a loan by simply entering key financial information.
-Receive an instant prediction on whether your loan application is likely to be approved or rejected , all while benefiting from a secure, transparent, and efficient process.
+Receive an instant prediction on whether your loan application is likely to be approved or rejected, all while benefiting from a secure, transparent, and efficient process.
 """)
 
 # Business Problem Section
@@ -36,7 +36,7 @@ Manual processes are time-consuming, subject to human bias, and can struggle to 
 Using automation through machine learning can address these challenges and bring greater efficiency, fairness, and speed to the loan evaluation process.
 """)
 
-# Purpose of
+# Purpose of this website
 st.markdown("""
 ## Purpose of this website
 The objectives of using loan prediction in this application are:
@@ -95,5 +95,4 @@ if submit_button:
     - `Loan_Amount` (numeric): Amount of loan requested.
     - `DTI_Ratio` (numeric): Debt-to-Income ratio.
     - `Employment_Status` (categorical): Employment status (`employed` / `unemployed`).
-""")
-
+    """)
