@@ -1,164 +1,99 @@
 import streamlit as st
-import pandas as pd
 import joblib
-import requests
-from io import BytesIO
+import pandas as pd
 
-# Function to load files directly from GitHub
-def load_file_from_github(url):
-    # Send GET request to fetch the file
-    response = requests.get(url)
-    
-    # Check if request was successful (status code 200)
-    if response.status_code == 200:
-        print("File downloaded successfully")
-    else:
-        print("Error downloading the file")
-        return None
+# Load model and scaler
+model_path = r'H:\Kuliah\Bootcamp\Finpro\knn_model.pkl'
+scaler_path = r'H:\Kuliah\Bootcamp\Finpro\scaler.pkl'
 
-    # Load the content of the file into joblib
-    return joblib.load(BytesIO(response.content))
-
-# URLs for model and scaler files hosted on GitHub
-model_url = "https://github.com/raiffaza/Food-Delivery-Times-Prediction/raw/main/xgb_tuned_model.pkl"
-scaler_url = "https://github.com/raiffaza/Food-Delivery-Times-Prediction/raw/main/scaler.pkl"
-
-# Load model and scaler from GitHub
-model = load_file_from_github(model_url)
-scaler = load_file_from_github(scaler_url)
-
-if model and scaler:
-    # Model and scaler loaded successfully
-    print("Model and scaler loaded successfully")
-else:
-    # Failed to load model and scaler
-    print("Error loading model and scaler")
-
-# Get the exact feature names and order expected by the model
-expected_columns = model.feature_names_in_.tolist()
-
-# Identify numeric features (must match training data)
-numeric_features = ['Distance_km', 'Preparation_Time_min', 'Courier_Experience_yrs']
-
-def make_prediction(distance_km, prep_time, courier_exp, weather, traffic, time_of_day, vehicle):
-    # Initialize all features to 0 (scalar, not list)
-    data = {col: 0 for col in expected_columns}
-
-    # Fill numeric features
-    data['Distance_km'] = distance_km
-    data['Preparation_Time_min'] = prep_time
-    data['Courier_Experience_yrs'] = courier_exp
-
-    # Set selected categorical features to 1
-    weather_col = f'Weather_{weather}'
-    if weather_col in data:
-        data[weather_col] = 1
-
-    traffic_col = f'Traffic_Level_{traffic}'
-    if traffic_col in data:
-        data[traffic_col] = 1
-
-    time_col = f'Time_of_Day_{time_of_day}'
-    if time_col in data:
-        data[time_col] = 1
-
-    vehicle_col = f'Vehicle_Type_{vehicle}'
-    if vehicle_col in data:
-        data[vehicle_col] = 1
-
-    # Convert to DataFrame with the expected columns
-    input_df = pd.DataFrame([data], columns=expected_columns)
-
-    # Scale only numeric features
-    input_df[numeric_features] = scaler.transform(input_df[numeric_features])
-
-    # Make prediction
-    prediction = model.predict(input_df)[0]
-    return prediction
+model = joblib.load(model_path)
+scaler = joblib.load(scaler_path)
 
 # Set page config
-st.set_page_config(
-    page_title="Uber Eats Delivery Time Prediction",
-    page_icon="🍔",
-    layout="centered"  # Set layout to centered for all content
-)
+st.set_page_config(page_title="Loan Prediction App", page_icon="🏦")
 
-# --- HEADER --- 
-# Centered Logo (Ensure this image is in the same directory as app.py)
+# Centered Logo
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("uber eats.png", width=250)  # Ensure this image is in the same directory as app.py
+    st.image("umbrella.jpg", width=250)
 
-# Title and Subtitle with white text
-st.markdown("<h1 style='color: white; text-align: center;'>Uber Eats Delivery Time Prediction</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='color: white; text-align: center;'>Fast • Secure • Intelligent</h3>", unsafe_allow_html=True)
-
-# --- ABOUT SECTION ---
+# Title and Description
+st.title("Umbrella Corps Loan Prediction App")
 st.markdown("""
-## About Uber Eats
-Uber Eats is revolutionizing food delivery by leveraging cutting-edge machine learning techniques to improve customer satisfaction and operational efficiency.
+### Umbrella Corps,a globally renowned leader in the medical and biotechnology industries, is now expanding its expertise into financial services with the launch of its innovative banking division.
+Leveraging cutting-edge technology and data-driven decision-making, Umbrella Corps introduces a smart loan evaluation system powered by machine learning .
+This application enables users to quickly assess their eligibility for a loan by simply entering key financial information.
+Receive an instant prediction on whether your loan application is likely to be approved or rejected , all while benefiting from a secure, transparent, and efficient process.
+""")
 
-This app uses a trained machine learning model to predict the delivery time based on parameters like distance, weather, traffic, and more.
-""", unsafe_allow_html=True)
-
-# Display the Business Problem Image (wide and centered)
-st.image("uber eats business problem.jpeg", use_container_width=True)
-
-# --- PURPOSE OF THE APP SECTION ---
+# Business Problem Section
 st.markdown("""
-## Purpose of this Website
-This platform allows users to input specific delivery parameters and instantly receive a **data-driven estimate** of the delivery time, powered by an advanced **XGBoost machine learning model**.
+## Business Problem
+Financial institutions need a reliable way to determine whether a loan application from a potential borrower should be approved or rejected. A well-designed loan approval process helps minimize the risk of non-performing loans and ensures that only financially viable applicants are approved.
 
-### 🎯 Objectives:
-- Real-time predictions based on input data
-- Improved resource allocation for Uber Eats operations
-- More accurate delivery time predictions to optimize customer experience
-""", unsafe_allow_html=True)
+Manual processes are time-consuming, subject to human bias, and can struggle to keep up with a high volume of applications. In addition, traditional methods may not be able to scale effectively as the number of applications increases.
 
-# Display the Company Profile Image (wide and centered)
-st.image("uber eats company profile.jpeg", use_container_width=True)
+Using automation through machine learning can address these challenges and bring greater efficiency, fairness, and speed to the loan evaluation process.
+""")
 
-# --- INPUT FORM SECTION ---
-st.markdown("### Enter Delivery Details", unsafe_allow_html=True)
+# Purpose of
+st.markdown("""
+## Purpose of this website
+The objectives of using loan prediction in this application are:
+- To assist in the automatic decision-making process of whether a loan will be approved or rejected, based on prospective borrowers' data.
+- To improve the accuracy and consistency of loan approval decisions, minimizing human subjectivity and bias.
+- To expedite the loan evaluation process, ensuring efficiency and scalability, especially in high-application volume environments.
+""")
 
-with st.form("delivery_form"):
-    distance_km = st.number_input("Distance (km)", min_value=0.0, format="%.2f", help="Distance between restaurant and delivery address.")
-    prep_time = st.number_input("Preparation Time (minutes)", min_value=0, help="Time taken to prepare the order.")
-    courier_exp = st.number_input("Courier Experience (years)", min_value=0.0, format="%.1f", help="Years of delivery courier experience.")
+# Input Section
+st.header("Enter Your Data")
+income = st.number_input("Income", min_value=0)
+credit_score = st.number_input("Credit Score", min_value=0, max_value=850)
+loan_amount = st.number_input("Loan Amount", min_value=0)
+dti_ratio = st.number_input("DTI Ratio", min_value=0.0)
+employment_status = st.selectbox(
+    "Employment Status",
+    [0, 1],
+    index=1,
+    format_func=lambda x: "Employed" if x == 1 else "Unemployed"
+)
 
-    st.markdown("<span style='color:white; font-weight:bold;'>Weather Condition</span>", unsafe_allow_html=True)
-    weather = st.selectbox("", ['Windy', 'Clear', 'Foggy', 'Rainy', 'Snowy'])
+# Submit Button
+submit_button = st.button("Check Loan Eligibility")
 
-    st.markdown("<span style='color:white; font-weight:bold;'>Traffic Level</span>", unsafe_allow_html=True)
-    traffic = st.selectbox("", ['Low', 'Medium', 'High'])
+# Prediction Result (appears only after button click)
+if submit_button:
+    # Create input data as DataFrame
+    input_data = pd.DataFrame({
+        'Income': [income],
+        'Credit_Score': [credit_score],
+        'Loan_Amount': [loan_amount],
+        'DTI_Ratio': [dti_ratio],
+        'Employment_Status': [employment_status]
+    })
 
-    st.markdown("<span style='color:white; font-weight:bold;'>Time of Day</span>", unsafe_allow_html=True)
-    time_of_day = st.selectbox("", ['Afternoon', 'Evening', 'Night', 'Morning'])
+    # Scale input data
+    input_data_scaled = scaler.transform(input_data)
 
-    st.markdown("<span style='color:white; font-weight:bold;'>Vehicle Type</span>", unsafe_allow_html=True)
-    vehicle = st.selectbox("", ['Scooter', 'Bike', 'Car'])
+    # Make prediction
+    prediction = model.predict(input_data_scaled)[0]
 
-    submit = st.form_submit_button("Predict Delivery Time")
+    # Display result in an attractive manner
+    st.markdown("## 📊 Prediction Result")
+    if prediction == 1:
+        st.success("✅ Congratulations! Your loan is likely to be **Approved**.", icon="💰")
+    else:
+        st.error("❌ Unfortunately, your loan may be **Rejected**.", icon="🚫")
 
-# --- PREDICTION RESULT SECTION ---
-if submit:
-    # Call prediction function when form is submitted
-    predicted_time = make_prediction(distance_km, prep_time, courier_exp, weather, traffic, time_of_day, vehicle)
-    
-    # Display result in an attractive manner with white text
-    st.markdown("<h2 style='color: white; text-align: center;'>📊 Prediction Result</h2>", unsafe_allow_html=True)
-    st.success(f"✅ Estimated Delivery Time: {predicted_time:.2f} minutes", icon="💨")
-
-    # Additional Info (Explanation) centered
+    # Additional Info
     st.markdown("""
     ---
-    ### 🔍 Explanation of Features
+    ### Explanation
+    - `Text` (string): User-provided reason for requesting a loan.
+    - `Income` (numeric): Applicant's income.
+    - `Credit_Score` (numeric): Applicant’s credit score.
+    - `Loan_Amount` (numeric): Amount of loan requested.
+    - `DTI_Ratio` (numeric): Debt-to-Income ratio.
+    - `Employment_Status` (categorical): Employment status (`employed` / `unemployed`).
+""")
 
-    - `Distance (km)` (numeric): Distance between the restaurant and the delivery address.
-    - `Preparation Time (minutes)` (numeric): Time taken to prepare the order.
-    - `Courier Experience (years)` (numeric): Years of experience of the courier.
-    - `Weather Condition` (categorical): Weather during the delivery (Windy, Clear, etc.).
-    - `Traffic Level` (categorical): Traffic conditions during the delivery (Low, Medium, High).
-    - `Time of Day` (categorical): Time of day during the delivery (Morning, Afternoon, Evening, Night).
-    - `Vehicle Type` (categorical): Type of vehicle used by the courier (Scooter, Bike, Car).
-    """, unsafe_allow_html=True)
